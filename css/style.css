@@ -38,7 +38,18 @@ a:hover {
 
 /* Media query for mobile devices */
 @media (max-width: 768px) {
-    body {
+    h1 {
+        font-size: 24px; /* Adjust the font size for mobile */
+        width: 100%; /* Make headers fill the screen width */
+    }
+    
+    img#logo {
+        width: 100%; /* Resize the image to the screen width */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    /* Adjust the font size of the body text for mobile */
+    p {
         font-size: 14px;
     }
 }
