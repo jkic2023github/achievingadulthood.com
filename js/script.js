@@ -1,7 +1,7 @@
 // script.js
 document.addEventListener('DOMContentLoaded', function() {
     const logo = document.getElementById('logo');
-    const images = ['profile.jpg', 'profile1.jpg']; // Array of image sources
+    const images = ['images/profile.jpg', 'images/profile1.jpg']; // Array of image sources
     let currentIndex = 0; // Initial index to display the first image
 
     function toggleImage() {
