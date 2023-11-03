@@ -1,5 +1,16 @@
 /* style.css */
 
+/* Define the spinning animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Apply the animation to the logo with the "spin-animation" class */
+.spin-animation {
+    animation: spin 2s linear infinite;
+}
+
 /* Define styles for the <body> element */
 body {
     font-family: 'Open Sans', sans-serif;
