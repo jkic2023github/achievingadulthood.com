@@ -1,5 +1,13 @@
 /* style.css */
 
+/* Default styles for desktop */
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
 /* Define the spinning animation */
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -9,13 +17,6 @@
 /* Apply the animation to the logo with the "spin-animation" class */
 .spin-animation {
     animation: spin 2s linear infinite;
-}
-
-/* Define styles for the <body> element */
-body {
-    font-family: 'Open Sans', sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
 }
 
 /* Define styles for the <h1> element */
@@ -33,4 +34,11 @@ a {
 /* Define styles for a link when hovered (mouse pointer over it) */
 a:hover {
     text-decoration: underline;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
 }
