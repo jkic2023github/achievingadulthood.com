@@ -54,3 +54,39 @@ a:hover {
         font-size: 24px;
     }
 }
+
+/* Navigation bar styles */
+nav {
+    background-color: #007bff;
+    color: #fff;
+    position: fixed; /* Position the navigation bar fixed at the top */
+    top: 0; /* Align it to the top of the viewport */
+    width: 100%; /* Make it span the entire width */
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a shadow for depth */
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: right;
+}
+
+.nav-links li {
+    display: inline-block;
+    margin: 0 15px; /* Adjust the spacing between links */
+}
+
+/* Style links in the navigation bar */
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 18px; /* Adjust the font size */
+}
+
+/* Style links on hover */
+.nav-links a:hover {
+    text-decoration: underline;
+}
