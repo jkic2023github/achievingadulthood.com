@@ -49,7 +49,7 @@ a:hover {
     }
 
     /* Adjust the font size of the body text for mobile */
-    /* p {
-        font-size: 14px;
-    } */
+    p {
+        font-size: 24px;
+    }
 }
