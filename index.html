@@ -1,54 +1,60 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Achieving Adulthood: Your Guide to Financial Independence</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-</head>
-<body>
-    <nav>
-        <div class="logo">Achieving Adulthood</div>
-        <ul class="nav-links">
-            <li><a href="#topics">Topics</a></li>
-            <li><a href="#about-me">About Me</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+---
+title: Home
+layout: default
+background: '/img/bg-index.jpg'
+---
 
-    <header>
-        <p></p>
-		<p></p>
-		<p></p>
-		<h1>Achieving Adulthood: Your Guide to Financial Independence</h1>
-        <img id="logo" src="images/profile.jpg" alt="Your Profile Picture" width="200">
-        <p>Your go-to website for practical tips and insights about adulting and personal finance.</p>
-        <p>We aim to educate and empower individuals by demystifying common financial terms and providing guidance for a smoother transition into adulthood.</p>
-        <p>Whether you’re just starting out in your career or looking to take control of your finances, our expert team is here to guide you every step of the way.</p>
-    </header>
-    
-    <section id="topics">
-        <h2>Topics</h2>
-        <h3>Mortgages and Finance</h3>
-		<h3>Investing</h3>
-		<h3>Career Development</h3>
-		<!-- Add more topics content goes here -->
-    </section>
-    
-    <section id="about-me">
-        <h2>About Me</h2>
-        <p>Hello, I'm Jake, and I'm passionate about helping you navigate the challenges of adult life and achieve your financial goals.</p>
-    </section>
-    
-    <section id="contact">
-        <h2>Contact Information</h2>
-        <p>If you have any questions or need personal guidance, you can connect with me on Instagram <a href="https://www.instagram.com/jake_at_firstrate/" target="_blank">@jake_at_firstrate</a>.</p>
-    </section>
-    
-    <footer>
-        <p>&copy; 2023 Achieving Adulthood</p>
-    </footer>
+<!-- Home Intro
+================================================== -->
+{% if page.url == "/" %} 
+<div class="rounded mb-5 hero">
+  <div class="row align-items-center justify-content-between">
+    <div class="col-md-6">
+      <h1 class="font-weight-bold mb-4 serif-font">Achieving Adulthood</h1>
+      <p class="lead mb-4">My name is Jake and I'm here to educate and empower individuals by demystifying common financial terms and providing guidance for a smoother transition into adulthood.</p>
+      <a href="{{site.baseurl}}/about" class="btn btn-dark text-white px-5 btn-lg">About me</a>
+    </div>
+    <div class="col-md-6 text-right pl-0 pl-lg-4">
+      <img class="intro" height="500" src="{{site.baseurl}}/assets/images/intro.svg">      
+    </div>
+  </div>
+</div>
+{% endif %}
 
-    <script src="script.js"></script>
-</body>
-</html>
+<!-- Featured
+================================================== -->
+<section class="row">
+  {% for post in site.posts %}
+      {% if post.featured == true %}
+          <div class="col-md-4 mb-5">
+          {% include postbox.html %}
+          </div>
+      {% endif %}
+  {% endfor %}
+  </div>
+</section>
+
+<!-- Posts List with Sidebar (except featured)
+================================================== -->
+<section class="row">
+  <div class="col-sm-8">
+    <div class="row">
+      {% for post in paginator.posts %}
+      {% unless post.featured == true %}
+      <div class="col-md-6 mb-5">
+        {% include postbox.html %}
+      </div>
+      {% endunless %}
+      {% endfor %}
+    </div>
+    <!-- Pagination -->
+    <div class="bottompagination">
+      <span class="navigation" role="navigation">
+          {% include pagination.html %}
+      </span>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    {% include sidebar.html %}
+  </div>
+</section>
