@@ -3,7 +3,7 @@ layout: post
 title:  "A Step-by-Step Guide to Retirement Planning"
 author: jake
 categories: [ retirement ]
-image: assets/images/5.jpg
+image: assets/images/7.jpg
 ---
 **Introduction:**
 Retirement is a milestone that many of us look forward to, a time when we can finally enjoy the fruits of our labor and live life on our terms. However, achieving a comfortable and financially secure retirement requires careful planning. In this comprehensive guide, we'll take you through the essential steps to ensure that you retire with confidence and peace of mind.
