@@ -11,7 +11,7 @@ As you embark on your retirement journey, navigating the complexities of financi
 
 #### 1. **Signing Up:**
    - You need to actively apply for Social Security benefits. You can do this online, by phone, or by visiting your local Social Security office.
-   - Visit the Social Security Administration (SSA) website (https://www.ssa.gov/) to apply online or find contact information for your local office.
+   - Visit the [Social Security Administration (SSA) website](https://www.ssa.gov/) to apply online or find contact information for your local office.
 
 #### 2. **Timing Matters:**
    - The timing of your application can impact the amount you receive. You can start receiving benefits as early as age 62, but waiting until your full retirement age (typically between 66 and 67) can result in higher monthly payments.
