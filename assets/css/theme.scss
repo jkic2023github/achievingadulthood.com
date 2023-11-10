@@ -32,8 +32,8 @@ body {
 }
 @media (max-width: 1366px) {
     .container-xl, .container-lg, .container-md, .container-sm, .container {
-        width:90%;
-        max-width:90%;
+        width:100%;
+        max-width:100%;
         padding:0 25px;
     }
 }
@@ -88,13 +88,13 @@ small, .small {
 .start-header {
 	opacity: 1;
 	transform: translateY(0);
-	padding: 20px 0;	
+	padding: 10px 0;	
 	-webkit-transition : all 0.3s ease-out;
 	transition : all 0.3s ease-out;
    
 }
 .start-header.scroll-on {	
-	padding: 5px 0;
+	padding: 1px 0;
 	-webkit-transition : all 0.3s ease-out;
 	transition : all 0.3s ease-out;
     box-shadow: 0px 10px 40px 0px rgba(0,0,0,0.05);
