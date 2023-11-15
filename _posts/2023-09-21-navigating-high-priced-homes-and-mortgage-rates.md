@@ -4,6 +4,8 @@ title:  "Navigating High Priced Homes and Mortgage Rates"
 author: jake
 categories: [ mortgage, finance ]
 image: assets/images/2.jpg
+featured: false
+description: "Blog article about what to do when houses or homes are priced high and mortgage rates are high."
 ---
 When houses are overpriced and mortgage rates are high, consider these strategies: 
 

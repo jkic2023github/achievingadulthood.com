@@ -5,7 +5,7 @@ baseurl: ""
 permalink: "/:title/"
 logo: 'assets/images/logo.png'
 favicon: 'assets/images/favicon.ico'
-author: Sal
+author: Jake
 paginate: 30
 disqus: 'demowebsite'
 locale: en_us
@@ -20,7 +20,7 @@ kramdown:
 sass:
   sass_dir: _sass
   style: :compressed
-ganalytics: UA-113961478-1
+ganalytics: G-0EVHWE4MH0
 
 # Authors
 authors:
