@@ -13,7 +13,6 @@ topmenu:
 - title: Contact
   url: "contact/"
   class: "ml-2 btn btn-dark text-white px-3"
-  external: true
 
 # Footer Menu
 footermenu:
