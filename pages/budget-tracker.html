@@ -16,13 +16,24 @@ permalink: "/budget-tracker/"
         table { width: 100%; margin: 20px 0; border-collapse: collapse; }
         th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
         button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .calculator { margin-top: 20px; }
+        .calculator input { width: 50px; text-align: right; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Budget Tracker</h1>
-        <label for="income">Income (Before Tax):</label>
-        <input type="number" id="income" placeholder="Enter your income before tax">
+        <label for="income">Income:</label>
+        <input type="number" id="income" placeholder="Enter your income">
+        <select id="incomeFrequency">
+            <option value="yearly">Yearly</option>
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
+        </select>
+        <select id="incomeType">
+            <option value="beforeTax">Before Tax</option>
+            <option value="afterTax">After Tax</option>
+        </select>
         
         <h3>Monthly Expenses:</h3>
         <table id="expensesTable">
@@ -32,27 +43,35 @@ permalink: "/budget-tracker/"
             </tr>
             <tr>
                 <td><input type="text" value="Rent/Mortgage" readonly></td>
-                <td><input type="number" placeholder="Amount"></td>
+                <td><input type="number" placeholder="1486"></td>
             </tr>
             <tr>
                 <td><input type="text" value="Utilities" readonly></td>
-                <td><input type="number" placeholder="Amount"></td>
+                <td><input type="number" placeholder="146"></td>
             </tr>
             <tr>
                 <td><input type="text" value="Groceries" readonly></td>
-                <td><input type="number" placeholder="Amount"></td>
+                <td><input type="number" placeholder="735"></td>
             </tr>
             <tr>
                 <td><input type="text" value="Transportation" readonly></td>
-                <td><input type="number" placeholder="Amount"></td>
+                <td><input type="number" placeholder="751"></td>
             </tr>
             <tr>
                 <td><input type="text" value="Insurance" readonly></td>
-                <td><input type="number" placeholder="Amount"></td>
+                <td><input type="number" placeholder="100"></td>
             </tr>
             <tr>
                 <td><input type="text" value="Savings" readonly></td>
-                <td><input type="number" placeholder="Amount"></td>
+                <td><input type="number" placeholder="417"></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Netflix Subscription" readonly></td>
+                <td><input type="number" placeholder="10"></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Cell Phones" readonly></td>
+                <td><input type="number" placeholder="100"></td>
             </tr>
         </table>
         <button onclick="addExpense()">Add Custom Expense</button>
@@ -63,6 +82,31 @@ permalink: "/budget-tracker/"
         
         <h3>Budget Summary:</h3>
         <p id="budgetSummary"></p>
+        
+        <h3>Calculator:</h3>
+        <div class="calculator">
+            <input type="text" id="calcInput" readonly>
+            <br>
+            <button onclick="appendCalc('1')">1</button>
+            <button onclick="appendCalc('2')">2</button>
+            <button onclick="appendCalc('3')">3</button>
+            <button onclick="appendCalc('+')">+</button>
+            <br>
+            <button onclick="appendCalc('4')">4</button>
+            <button onclick="appendCalc('5')">5</button>
+            <button onclick="appendCalc('6')">6</button>
+            <button onclick="appendCalc('-')">-</button>
+            <br>
+            <button onclick="appendCalc('7')">7</button>
+            <button onclick="appendCalc('8')">8</button>
+            <button onclick="appendCalc('9')">9</button>
+            <button onclick="appendCalc('*')">*</button>
+            <br>
+            <button onclick="clearCalc()">C</button>
+            <button onclick="appendCalc('0')">0</button>
+            <button onclick="calculate()">=</button>
+            <button onclick="appendCalc('/')">/</button>
+        </div>
     </div>
 
     <script>
@@ -76,7 +120,9 @@ permalink: "/budget-tracker/"
         }
 
         function generateBudget() {
-            let income = document.getElementById('income').value;
+            let income = parseFloat(document.getElementById('income').value);
+            let frequency = document.getElementById('incomeFrequency').value;
+            let type = document.getElementById('incomeType').value;
             let table = document.getElementById('expensesTable');
             let totalExpenses = 0;
 
@@ -85,8 +131,20 @@ permalink: "/budget-tracker/"
                 totalExpenses += parseFloat(amount);
             }
 
-            let balance = income - totalExpenses;
-            document.getElementById('budgetSummary').innerText = `Income (Before Tax): $${income}\nTotal Monthly Expenses: $${totalExpenses}\nBalance: $${balance}`;
+            // Convert income based on frequency
+            if (frequency === 'weekly') {
+                income *= 52;
+            } else if (frequency === 'monthly') {
+                income *= 12;
+            }
+
+            // Estimate after-tax income if income is before tax
+            if (type === 'beforeTax') {
+                income = income * 0.7;  // Approximate after-tax income assuming a 30% tax rate
+            }
+
+            let balance = income - (totalExpenses * 12);
+            document.getElementById('budgetSummary').innerText = `Income (${type === 'beforeTax' ? 'Before Tax (Estimated After Tax): $' + income.toFixed(2) : 'After Tax'}): $${income.toFixed(2)}\nTotal Yearly Expenses: $${(totalExpenses * 12).toFixed(2)}\nYearly Balance: $${balance.toFixed(2)}`;
         }
 
         function downloadCSV() {
@@ -135,6 +193,16 @@ permalink: "/budget-tracker/"
 
             doc.save("budget.pdf");
         }
-    </script>
-</body>
-</html>
+
+        // Calculator functions
+        function appendCalc(val) {
+            document.getElementById('calcInput').value += val;
+        }
+
+        function clearCalc() {
+            document.getElementById('calcInput').value = '';
+        }
+
+        function calculate() {
+            try {
+                document.getElementById('calcInput').value = eval(document.getElementBy[_{{{CITATION{{{_1{](https://github.com/emclaren/ghostwriter/tree/ce3addbcf86c430889cad10cc0bd492a0276ed17/src%2Fjs%2Fscript-parchment.js)[_{{{CITATION{{{_2{](https://github.com/OpenUpSA/wazimap-ng-ui/tree/ade75b63955ea7d141c94828dd6ef0367b6e6eed/src%2Fjs%2Freusable-charts%2Fhorizontal-bar-chart.js)
