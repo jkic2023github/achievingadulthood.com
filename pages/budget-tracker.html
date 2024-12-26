@@ -1,5 +1,5 @@
 ---
-layout: Default-J
+layout: default
 title: Budget Tracker
 permalink: "/budget-tracker/"
 ---
@@ -11,11 +11,15 @@ permalink: "/budget-tracker/"
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 20px; }
+        body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h1, h3 { text-align: center; color: #333; }
         table { width: 100%; margin: 20px 0; border-collapse: collapse; }
         th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
+        button:hover { background-color: #45a049; }
+        label { display: block; margin-top: 10px; color: #333; }
+        input[type="number"], input[type="text"], select { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px; }
         .calculator { margin-top: 20px; }
         .calculator input { width: 50px; text-align: right; }
     </style>
@@ -73,8 +77,19 @@ permalink: "/budget-tracker/"
                 <td><input type="text" value="Cell Phones" readonly></td>
                 <td><input type="number" placeholder="100"></td>
             </tr>
+            <tr>
+                <td><input type="text" value="Internet" readonly></td>
+                <td><input type="number" placeholder="60"></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Entertainment" readonly></td>
+                <td><input type="number" placeholder="100"></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Clothing" readonly></td>
+                <td><input type="number" placeholder="100"></td>
+            </tr>
         </table>
-	</table>
         <button onclick="addExpense()">Add Custom Expense</button>
         <br>
         <button onclick="generateBudget()">Generate Budget</button>
@@ -109,7 +124,7 @@ permalink: "/budget-tracker/"
             <button onclick="appendCalc('/')">/</button>
         </div>
     </div>
-	    <script>
+    <script>
         function addExpense() {
             let table = document.getElementById('expensesTable');
             let row = table.insertRow();
@@ -128,7 +143,7 @@ permalink: "/budget-tracker/"
 
             for (let i = 1; i < table.rows.length; i++) {
                 let amount = table.rows[i].cells[1].children[0].value;
-                totalExpenses += parseFloat(amount);
+                totalExpenses += parseFloat(amount) || parseFloat(table.rows[i].cells[1].children[0].placeholder);
             }
 
             // Convert income based on frequency
@@ -143,8 +158,19 @@ permalink: "/budget-tracker/"
                 income = income * 0.7;  // Approximate after-tax income assuming a 30% tax rate
             }
 
-            let balance = income - (totalExpenses * 12);
-            document.getElementById('budgetSummary').innerText = `Income (${type === 'beforeTax' ? 'Before Tax (Estimated After Tax): $' + income.toFixed(2) : 'After Tax'}): $${income.toFixed(2)}\nTotal Yearly Expenses: $${(totalExpenses * 12).toFixed(2)}\nYearly Balance: $${balance.toFixed(2)}`;
+            let yearlyExpenses = totalExpenses * 12;
+            let monthlyExpenses = totalExpenses;
+            let weeklyExpenses = totalExpenses / 4.33;  // Approximate weeks in a month
+
+            let yearlyIncome = income;
+            let monthlyIncome = income / 12;
+            let weeklyIncome = income / 52;
+
+            let yearlyBalance = income - yearlyExpenses;
+            let monthlyBalance = monthlyIncome - monthlyExpenses;
+            let weeklyBalance = weeklyIncome - weeklyExpenses;
+
+            document.getElementById('budgetSummary').innerText = `Income (${type === 'beforeTax' ? 'Before Tax (Estimated After Tax): $' + income.toFixed(2) : 'After Tax'}): $${yearlyIncome.toFixed(2)}\nTotal Yearly Expenses: $${yearlyExpenses.toFixed(2)}\nYearly Surplus/Deficit: $${yearlyBalance.toFixed(2)}\n\nMonthly Income: $${monthlyIncome.toFixed(2)}\nTotal Monthly Expenses: $${monthlyExpenses.toFixed(2)}\nMonthly Surplus/Deficit: $${monthlyBalance.toFixed(2)}\n\nWeekly Income: $${weeklyIncome.toFixed(2)}\nTotal Weekly Expenses: $${weeklyExpenses.toFixed(2)}\nWeekly Surplus/Deficit: $${weeklyBalance.toFixed(2)}`;
         }
 
         function downloadCSV() {
@@ -154,7 +180,7 @@ permalink: "/budget-tracker/"
             for (let i = 1; i < table.rows.length; i++) {
                 let expense = table.rows[i].cells[0].children[0].value;
                 let amount = table.rows[i].cells[1].children[0].value;
-                data.push([expense, parseFloat(amount)]);
+                data.push([expense, parseFloat(amount) || parseFloat(table.rows[i].cells[1].children[0].placeholder)]);
             }
 
             let csvContent = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
@@ -165,7 +191,6 @@ permalink: "/budget-tracker/"
             document.body.appendChild(link);
             link.click();
         }
-
         function downloadPDF() {
             let { jsPDF } = window.jspdf;
             let doc = new jsPDF();
@@ -177,8 +202,8 @@ permalink: "/budget-tracker/"
             for (let i = 1; i < table.rows.length; i++) {
                 let expense = table.rows[i].cells[0].children[0].value;
                 let amount = table.rows[i].cells[1].children[0].value;
-                totalExpenses += parseFloat(amount);
-                data.push([expense, parseFloat(amount)]);
+                totalExpenses += parseFloat(amount) || parseFloat(table.rows[i].cells[1].children[0].placeholder);
+                data.push([expense, parseFloat(amount) || parseFloat(table.rows[i].cells[1].children[0].placeholder)]);
             }
 
             let balance = income - totalExpenses;
@@ -213,4 +238,3 @@ permalink: "/budget-tracker/"
     </script>
 </body>
 </html>
-
