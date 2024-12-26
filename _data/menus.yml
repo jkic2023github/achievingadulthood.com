@@ -9,6 +9,9 @@ topmenu:
 
 - title: Categories
   url: "categories/"
+  
+- title: Budget Sheet
+  url: "budget-tracker/"
 
 - title: Contact
   url: "contact/"
