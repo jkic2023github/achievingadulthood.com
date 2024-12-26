@@ -12,23 +12,43 @@
         button { padding: 10px 20px; margin: 5px; cursor: pointer; }
     </style>
 </head>
-<body>
+<body class="page">
     <div class="container">
         <h1>Budget Tracker</h1>
-        <label for="income">Income:</label>
+        <label for="income">Income (Before Tax):</label>
         <input type="number" id="income" placeholder="Enter your income">
         
-        <h3>Expenses:</h3>
+        <h3>Monthly Expenses:</h3>
         <table id="expensesTable">
             <tr>
                 <th>Expense</th>
                 <th>Amount</th>
             </tr>
+            <tr>
+                <td>Rent/Mortgage</td>
+                <td><input type="number" placeholder="Amount"></td>
+            </tr>
+            <tr>
+                <td>Utilities</td>
+                <td><input type="number" placeholder="Amount"></td>
+            </tr>
+            <tr>
+                <td>Groceries</td>
+                <td><input type="number" placeholder="Amount"></td>
+            </tr>
+            <tr>
+                <td>Transportation</td>
+                <td><input type="number" placeholder="Amount"></td>
+            </tr>
+            <tr>
+                <td>Insurance</td>
+                <td><input type="number" placeholder="Amount"></td>
+            </tr>
         </table>
         <button onclick="addExpense()">Add Expense</button>
         <br>
         <button onclick="generateBudget()">Generate Budget</button>
-        <button onclick="downloadExcel()">Download as Excel</button>
+        <button onclick="downloadCSV()">Download as CSV</button>
         <button onclick="downloadPDF()">Download as PDF</button>
         
         <h3>Budget Summary:</h3>
@@ -59,7 +79,7 @@
             document.getElementById('budgetSummary').innerText = `Income: $${income}\nTotal Expenses: $${totalExpenses}\nBalance: $${balance}`;
         }
 
-        function downloadExcel() {
+        function downloadCSV() {
             let table = document.getElementById('expensesTable');
             let data = [['Expense', 'Amount']];
             
@@ -69,11 +89,14 @@
                 data.push([expense, parseFloat(amount)]);
             }
 
-            let ws = XLSX.utils.aoa_to_sheet(data);
-            let wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Budget");
-
-            XLSX.writeFile(wb, "budget.xlsx");
+            let csvContent = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "budget.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function downloadPDF() {
@@ -92,17 +115,4 @@
             }
 
             let balance = income - totalExpenses;
-            doc.text(`Income: $${income}`, 10, 10);
-            doc.text(`Total Expenses: $${totalExpenses}`, 10, 20);
-            doc.text(`Balance: $${balance}`, 10, 30);
-
-            let startY = 40;
-            data.forEach((row, index) => {
-                doc.text(`${row[0]}: $${row[1]}`, 10, startY + (index * 10));
-            });
-
-            doc.save("budget.pdf");
-        }
-    </script>
-</body>
-</html>
+            doc
