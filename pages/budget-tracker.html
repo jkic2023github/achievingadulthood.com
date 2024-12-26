@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: Default-J
 title: Budget Tracker
 permalink: "/budget-tracker/"
 ---
@@ -74,6 +74,7 @@ permalink: "/budget-tracker/"
                 <td><input type="number" placeholder="100"></td>
             </tr>
         </table>
+	</table>
         <button onclick="addExpense()">Add Custom Expense</button>
         <br>
         <button onclick="generateBudget()">Generate Budget</button>
@@ -108,8 +109,7 @@ permalink: "/budget-tracker/"
             <button onclick="appendCalc('/')">/</button>
         </div>
     </div>
-
-    <script>
+	    <script>
         function addExpense() {
             let table = document.getElementById('expensesTable');
             let row = table.insertRow();
@@ -205,19 +205,6 @@ permalink: "/budget-tracker/"
 
         function calculate() {
             try {
-                document.getElementById('calcInput').value = eval(document.getElementBy[_{{{CITATION{{{_1{](https://github.com/emclaren/ghostwriter/tree/ce3addbcf86c430889cad10cc0bd492a0276ed17/src%2Fjs%2Fscript-parchment.js)[_{{{CITATION{{{_2{](https://github.com/OpenUpSA/wazimap-ng-ui/tree/ade75b63955ea7d141c94828dd6ef0367b6e6eed/src%2Fjs%2Freusable-charts%2Fhorizontal-bar-chart.js)
-		}
-		
-		function appendCalc(val) {
-            document.getElementById('calcInput').value += val;
-        }
-
-        function clearCalc() {
-            document.getElementById('calcInput').value = '';
-        }
-
-        function calculate() {
-            try {
                 document.getElementById('calcInput').value = eval(document.getElementById('calcInput').value);
             } catch (e) {
                 document.getElementById('calcInput').value = 'Error';
@@ -226,3 +213,4 @@ permalink: "/budget-tracker/"
     </script>
 </body>
 </html>
+
