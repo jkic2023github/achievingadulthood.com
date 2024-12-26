@@ -206,3 +206,23 @@ permalink: "/budget-tracker/"
         function calculate() {
             try {
                 document.getElementById('calcInput').value = eval(document.getElementBy[_{{{CITATION{{{_1{](https://github.com/emclaren/ghostwriter/tree/ce3addbcf86c430889cad10cc0bd492a0276ed17/src%2Fjs%2Fscript-parchment.js)[_{{{CITATION{{{_2{](https://github.com/OpenUpSA/wazimap-ng-ui/tree/ade75b63955ea7d141c94828dd6ef0367b6e6eed/src%2Fjs%2Freusable-charts%2Fhorizontal-bar-chart.js)
+		}
+		
+		function appendCalc(val) {
+            document.getElementById('calcInput').value += val;
+        }
+
+        function clearCalc() {
+            document.getElementById('calcInput').value = '';
+        }
+
+        function calculate() {
+            try {
+                document.getElementById('calcInput').value = eval(document.getElementById('calcInput').value);
+            } catch (e) {
+                document.getElementById('calcInput').value = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
