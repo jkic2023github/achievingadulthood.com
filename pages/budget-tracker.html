@@ -1,3 +1,9 @@
+---
+layout: default
+title: Budget Tracker
+permalink: "/budget-tracker/"
+---
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,11 +18,11 @@
         button { padding: 10px 20px; margin: 5px; cursor: pointer; }
     </style>
 </head>
-<body class="page">
+<body>
     <div class="container">
         <h1>Budget Tracker</h1>
         <label for="income">Income (Before Tax):</label>
-        <input type="number" id="income" placeholder="Enter your income">
+        <input type="number" id="income" placeholder="Enter your income before tax">
         
         <h3>Monthly Expenses:</h3>
         <table id="expensesTable">
@@ -25,27 +31,31 @@
                 <th>Amount</th>
             </tr>
             <tr>
-                <td>Rent/Mortgage</td>
+                <td><input type="text" value="Rent/Mortgage" readonly></td>
                 <td><input type="number" placeholder="Amount"></td>
             </tr>
             <tr>
-                <td>Utilities</td>
+                <td><input type="text" value="Utilities" readonly></td>
                 <td><input type="number" placeholder="Amount"></td>
             </tr>
             <tr>
-                <td>Groceries</td>
+                <td><input type="text" value="Groceries" readonly></td>
                 <td><input type="number" placeholder="Amount"></td>
             </tr>
             <tr>
-                <td>Transportation</td>
+                <td><input type="text" value="Transportation" readonly></td>
                 <td><input type="number" placeholder="Amount"></td>
             </tr>
             <tr>
-                <td>Insurance</td>
+                <td><input type="text" value="Insurance" readonly></td>
+                <td><input type="number" placeholder="Amount"></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="Savings" readonly></td>
                 <td><input type="number" placeholder="Amount"></td>
             </tr>
         </table>
-        <button onclick="addExpense()">Add Expense</button>
+        <button onclick="addExpense()">Add Custom Expense</button>
         <br>
         <button onclick="generateBudget()">Generate Budget</button>
         <button onclick="downloadCSV()">Download as CSV</button>
@@ -76,7 +86,7 @@
             }
 
             let balance = income - totalExpenses;
-            document.getElementById('budgetSummary').innerText = `Income: $${income}\nTotal Expenses: $${totalExpenses}\nBalance: $${balance}`;
+            document.getElementById('budgetSummary').innerText = `Income (Before Tax): $${income}\nTotal Monthly Expenses: $${totalExpenses}\nBalance: $${balance}`;
         }
 
         function downloadCSV() {
@@ -96,7 +106,6 @@
             link.setAttribute("download", "budget.csv");
             document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
         }
 
         function downloadPDF() {
@@ -115,4 +124,17 @@
             }
 
             let balance = income - totalExpenses;
-            doc
+            doc.text(`Income (Before Tax): $${income}`, 10, 10);
+            doc.text(`Total Monthly Expenses: $${totalExpenses}`, 10, 20);
+            doc.text(`Balance: $${balance}`, 10, 30);
+
+            let startY = 40;
+            data.forEach((row, index) => {
+                doc.text(`${row[0]}: $${row[1]}`, 10, startY + (index * 10));
+            });
+
+            doc.save("budget.pdf");
+        }
+    </script>
+</body>
+</html>
