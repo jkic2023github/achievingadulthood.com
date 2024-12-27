@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Amortization Calculator"
+title: "Amortization Schedule"
 author: jake
 categories: [ finance ]
 image: assets/images/10.jpg
