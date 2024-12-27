@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: Default-J
 title: Budget Tracker
 permalink: "/budget-tracker/"
 ---
@@ -20,8 +20,10 @@ permalink: "/budget-tracker/"
         button:hover { background-color: #45a049; }
         label { display: block; margin-top: 10px; color: #333; }
         input[type="number"], input[type="text"], select { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px; }
-        .calculator { margin-top: 20px; }
-        .calculator input { width: 50px; text-align: right; }
+        .calculator { display: flex; justify-content: center; align-items: center; flex-direction: column; margin-top: 20px; }
+        .calc-display { width: 200px; height: 50px; margin-bottom: 10px; text-align: right; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 24px; }
+        .calc-buttons { display: flex; flex-wrap: wrap; justify-content: center; }
+        .calc-buttons button { width: 48px; height: 48px; margin: 2px; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -101,27 +103,25 @@ permalink: "/budget-tracker/"
         
         <h3>Calculator:</h3>
         <div class="calculator">
-            <input type="text" id="calcInput" readonly>
-            <br>
-            <button onclick="appendCalc('1')">1</button>
-            <button onclick="appendCalc('2')">2</button>
-            <button onclick="appendCalc('3')">3</button>
-            <button onclick="appendCalc('+')">+</button>
-            <br>
-            <button onclick="appendCalc('4')">4</button>
-            <button onclick="appendCalc('5')">5</button>
-            <button onclick="appendCalc('6')">6</button>
-            <button onclick="appendCalc('-')">-</button>
-            <br>
-            <button onclick="appendCalc('7')">7</button>
-            <button onclick="appendCalc('8')">8</button>
-            <button onclick="appendCalc('9')">9</button>
-            <button onclick="appendCalc('*')">*</button>
-            <br>
-            <button onclick="clearCalc()">C</button>
-            <button onclick="appendCalc('0')">0</button>
-            <button onclick="calculate()">=</button>
-            <button onclick="appendCalc('/')">/</button>
+            <div id="calcInput" class="calc-display"></div>
+            <div class="calc-buttons">
+                <button onclick="appendCalc('1')">1</button>
+                <button onclick="appendCalc('2')">2</button>
+                <button onclick="appendCalc('3')">3</button>
+                <button onclick="appendCalc('+')">+</button>
+                <button onclick="appendCalc('4')">4</button>
+                <button onclick="appendCalc('5')">5</button>
+                <button onclick="appendCalc('6')">6</button>
+                <button onclick="appendCalc('-')">-</button>
+                <button onclick="appendCalc('7')">7</button>
+                <button onclick="appendCalc('8')">8</button>
+                <button onclick="appendCalc('9')">9</button>
+                <button onclick="appendCalc('*')">*</button>
+                <button onclick="clearCalc()">C</button>
+                <button onclick="appendCalc('0')">0</button>
+                <button onclick="calculate()">=</button>
+                <button onclick="appendCalc('/')">/</button>
+            </div>
         </div>
     </div>
     <script>
@@ -221,18 +221,19 @@ permalink: "/budget-tracker/"
 
         // Calculator functions
         function appendCalc(val) {
-            document.getElementById('calcInput').value += val;
+            document.getElementById('calcInput').innerHTML += val;
         }
 
         function clearCalc() {
-            document.getElementById('calcInput').value = '';
+            document.getElementById('calcInput').innerHTML = '';
         }
 
         function calculate() {
             try {
-                document.getElementById('calcInput').value = eval(document.getElementById('calcInput').value);
+                let result = eval(document.getElementById('calcInput').innerHTML);
+                document.getElementById('calcInput').innerHTML = result;
             } catch (e) {
-                document.getElementById('calcInput').value = 'Error';
+                document.getElementById('calcInput').innerHTML = 'Error';
             }
         }
     </script>
