@@ -13,6 +13,9 @@ topmenu:
 - title: Budget Sheet
   url: "budget-tracker/"
 
+- title: Amortization Tool
+  url: "amortization-calculator/"
+  
 - title: Contact
   url: "contact/"
   class: "ml-2 btn btn-dark text-white px-3"

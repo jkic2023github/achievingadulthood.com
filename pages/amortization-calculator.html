@@ -1,0 +1,155 @@
+---
+layout: default
+title: Amortization Calculator
+permalink: "/amortization-calculator/"
+---
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Amortization Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h1, h3 { text-align: center; color: #333; }
+        table { width: 100%; margin: 20px 0; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
+        button:hover { background-color: #45a049; }
+        label { display: block; margin-top: 10px; color: #333; }
+        input[type="number"], input[type="text"], input[type="checkbox"], select { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Amortization Calculator</h1>
+        <label for="loanAmount">Loan Amount:</label>
+        <input type="number" id="loanAmount" placeholder="Enter your loan amount">
+        
+        <label for="interestRate">Interest Rate (%):</label>
+        <input type="number" id="interestRate" placeholder="Enter your interest rate" step="0.01">
+        
+        <label for="loanTerm">Loan Term (years):</label>
+        <input type="number" id="loanTerm" placeholder="Enter your loan term in years">
+        
+        <label for="biWeekly">Bi-weekly Payments:</label>
+        <input type="checkbox" id="biWeekly">
+        
+        <label for="extraLumpSum">Extra Lump Sum Payment:</label>
+        <input type="number" id="extraLumpSum" placeholder="Enter extra lump sum payment" step="0.01">
+        
+        <label for="lumpSumMonth">Month to Pay Lump Sum:</label>
+        <input type="number" id="lumpSumMonth" placeholder="Enter the month to pay lump sum" step="1" min="1">
+        
+        <label for="extraRecurring">Extra Recurring Payment:</label>
+        <input type="number" id="extraRecurring" placeholder="Enter extra recurring payment" step="0.01">
+        
+        <label for="recurringStartMonth">Start Month for Recurring Payment:</label>
+        <input type="number" id="recurringStartMonth" placeholder="Enter the start month for recurring payment" step="1" min="1">
+        
+        <button onclick="generateAmortization()">Generate Amortization Schedule</button>
+        
+        <h3>Amortization Schedule:</h3>
+        <table id="amortizationTable">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Principal Paid</th>
+                    <th>Interest Paid</th>
+                    <th>Total Interest Paid</th>
+                    <th>Remaining Balance</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        
+        <h3>Savings Graph:</h3>
+        <canvas id="savingsChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        function generateAmortization() {
+            // Retrieve user inputs
+            let loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            let interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+            let loanTerm = parseInt(document.getElementById('loanTerm').value) * 12;
+            let biWeekly = document.getElementById('biWeekly').checked;
+            let extraLumpSum = parseFloat(document.getElementById('extraLumpSum').value) || 0;
+            let lumpSumMonth = parseInt(document.getElementById('lumpSumMonth').value) || 0;
+            let extraRecurring = parseFloat(document.getElementById('extraRecurring').value) || 0;
+            let recurringStartMonth = parseInt(document.getElementById('recurringStartMonth').value) || 0;
+            
+            let monthlyPayment = loanAmount * interestRate / (1 - Math.pow(1 + interestRate, -loanTerm));
+            let biWeeklyPayment = monthlyPayment / 2;
+            
+            let amortizationData = [];
+            let totalInterestPaid = 0;
+            let principalPaid, interestPaid, remainingBalance = loanAmount;
+            let paymentInterval = biWeekly ? 2 : 1;
+            let totalPayments = loanTerm * paymentInterval;
+            
+            for (let month = 1; month <= totalPayments; month++) {
+                interestPaid = remainingBalance * interestRate * paymentInterval;
+                principalPaid = (biWeekly ? biWeeklyPayment : monthlyPayment) - interestPaid;
+                totalInterestPaid += interestPaid;
+                remainingBalance -= principalPaid;
+
+                if (month === lumpSumMonth) {
+                    remainingBalance -= extraLumpSum;
+                }
+
+                if (month >= recurringStartMonth) {
+                    remainingBalance -= extraRecurring * paymentInterval;
+                    principalPaid += extraRecurring * paymentInterval;
+                }
+
+                amortizationData.push({ month, principalPaid, interestPaid, totalInterestPaid, remainingBalance });
+
+                if (remainingBalance <= 0) break;
+            }
+
+            let tableBody = document.getElementById('amortizationTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            amortizationData.forEach(data => {
+                let row = tableBody.insertRow();
+                row.insertCell(0).innerText = data.month;
+                row.insertCell(1).innerText = data.principalPaid.toFixed(2);
+                row.insertCell(2).innerText = data.interestPaid.toFixed(2);
+                row.insertCell(3).innerText = data.totalInterestPaid.toFixed(2);
+                row.insertCell(4).innerText = data.remainingBalance.toFixed(2);
+            });
+
+            generateSavingsChart(amortizationData);
+        }
+
+        function generateSavingsChart(amortizationData) {
+            let labels = amortizationData.map(data => data.month);
+            let principalData = amortizationData.map(data => data.principalPaid);
+            let interestData = amortizationData.map(data => data.interestPaid);
+
+            let ctx = document.getElementById('savingsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Principal Paid', data: principalData, borderColor: 'green', fill: false },
+                        { label: 'Interest Paid', data: interestData, borderColor: 'red', fill: false }
+                    ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
