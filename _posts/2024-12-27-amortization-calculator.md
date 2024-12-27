@@ -160,3 +160,15 @@ Managing your mortgage effectively is crucial for financial stability. Use this 
         document.getElementById('savingsSummary').innerText = `By making extra payments, you have shortened your loan term by ${(originalLoanTerm - shortenedTerm) / 12} years and saved $${interestSaved.toFixed(2)} in interest!`;
     }
 </script>
+
+<style>
+    .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .button-container button {
+        flex: 1;
+        min-width: 150px;
+    }
+</style>
