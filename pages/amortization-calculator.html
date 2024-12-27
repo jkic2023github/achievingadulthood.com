@@ -53,6 +53,8 @@ permalink: "/amortization-calculator/"
         
         <button onclick="generateAmortization()">Generate Amortization Schedule</button>
         
+        <h3 id="regularPayment" style="text-align: center; color: #333;"></h3>
+        
         <h3>Amortization Schedule:</h3>
         <table id="amortizationTable">
             <thead>
@@ -73,62 +75,71 @@ permalink: "/amortization-calculator/"
         
         <h3 id="savingsSummary" style="text-align: center; color: #333;"></h3>
     </div>
-    <script>
-        function generateAmortization() {
-            let loanAmount = parseFloat(document.getElementById('loanAmount').value);
-            let interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
-            let loanTerm = parseInt(document.getElementById('loanTerm').value) * 12;
-            let biWeekly = document.getElementById('biWeekly').checked;
-            let startBiWeekly = parseInt(document.getElementById('startBiWeekly').value) || 0;
-            let extraLumpSum = parseFloat(document.getElementById('extraLumpSum').value) || 0;
-            let lumpSumMonth = parseInt(document.getElementById('lumpSumMonth').value) || 0;
-            let extraRecurring = parseFloat(document.getElementById('extraRecurring').value) || 0;
-            let recurringStartMonth = parseInt(document.getElementById('recurringStartMonth').value) || 0;
-            
-            let monthlyPayment = loanAmount * interestRate / (1 - Math.pow(1 + interestRate, -loanTerm));
-            let biWeeklyPayment = monthlyPayment / 2;
-            
-            let amortizationData = [];
-            let totalInterestPaid = 0;
-            let principalPaid, interestPaid, extraPrincipal, remainingBalance = loanAmount;
-            let biWeeklyCounter = startBiWeekly;
-            let totalPayments = loanTerm;
 
-            for (let month = 1; month <= totalPayments; month++) {
-                if (biWeekly && month >= startBiWeekly && (month - startBiWeekly) % 6 === 0) {
+<script>
+    function generateAmortization() {
+        let loanAmount = parseFloat(document.getElementById('loanAmount').value);
+        let interestRate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+        let loanTerm = parseInt(document.getElementById('loanTerm').value) * 12;
+        let biWeekly = document.getElementById('biWeekly').checked;
+        let startBiWeekly = parseInt(document.getElementById('startBiWeekly').value) || 0;
+        let extraLumpSum = parseFloat(document.getElementById('extraLumpSum').value) || 0;
+        let lumpSumMonth = parseInt(document.getElementById('lumpSumMonth').value) || 0;
+        let extraRecurring = parseFloat(document.getElementById('extraRecurring').value) || 0;
+        let recurringStartMonth = parseInt(document.getElementById('recurringStartMonth').value) || 0;
+        
+        let monthlyPayment = loanAmount * interestRate / (1 - Math.pow(1 + interestRate, -loanTerm));
+        let biWeeklyPayment = monthlyPayment / 2;
+        document.getElementById('regularPayment').innerText = `Regular Monthly Payment (Principal & Interest): $${monthlyPayment.toFixed(2)}`;
+        
+        let amortizationData = [];
+        let totalInterestPaid = 0;
+        let principalPaid, interestPaid, extraPrincipal, remainingBalance = loanAmount;
+        let biWeeklyCounter = 0;
+        let totalPayments = biWeekly ? loanTerm * 2 : loanTerm;
+
+        for (let month = 1; month <= totalPayments; month++) {
+            interestPaid = remainingBalance * interestRate;
+            principalPaid = (biWeekly && month >= startBiWeekly) ? biWeeklyPayment - interestPaid / 2 : monthlyPayment - interestPaid;
+            extraPrincipal = (month === lumpSumMonth ? extraLumpSum : 0) + (month >= recurringStartMonth ? extraRecurring : 0);
+
+            if (biWeekly && month >= startBiWeekly) {
+                biWeeklyCounter++;
+                if (biWeeklyCounter % 13 === 0) {  // Extra payment every 6 months
                     remainingBalance -= biWeeklyPayment;
+                    extraPrincipal += biWeeklyPayment;  // Reflect as extra principal
                 }
-
-                interestPaid = remainingBalance * interestRate;
-                principalPaid = monthlyPayment - interestPaid;
-                extraPrincipal = (month === lumpSumMonth ? extraLumpSum : 0) + (month >= recurringStartMonth ? extraRecurring : 0);
-                totalInterestPaid += interestPaid;
-                remainingBalance -= (principalPaid + extraPrincipal);
-
-                amortizationData.push({ month, principalPaid, interestPaid, extraPrincipal, totalInterestPaid, remainingBalance });
-
-                if (remainingBalance <= 0) break;
             }
 
-            populateTable(amortizationData);
-            generateSavingsChart(amortizationData);
-            calculateSavingsSummary(amortizationData, loanTerm, totalInterestPaid);
+            totalInterestPaid += interestPaid;
+            remainingBalance -= (principalPaid + extraPrincipal);
+
+            amortizationData.push({ month, principalPaid, interestPaid, extraPrincipal, totalInterestPaid, remainingBalance });
+
+            if (remainingBalance <= 0) break;
         }
 
-        function populateTable(data) {
-            let tableBody = document.getElementById('amortizationTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';
+        populateTable(amortizationData);
+        generateSavingsChart(amortizationData);
+        calculateSavingsSummary(amortizationData, loanTerm, totalInterestPaid);
+    }
 
-            data.forEach(entry => {
-                let row = tableBody.insertRow();
-                row.insertCell(0).innerText = entry.month;
-                row.insertCell(1).innerText = entry.principalPaid.toFixed(2);
-                row.insertCell(2).innerText = entry.interestPaid.toFixed(2);
-                row.insertCell(3).innerText = entry.extraPrincipal.toFixed(2);
-                row.insertCell(4).innerText = entry.totalInterestPaid.toFixed(2);
-                row.insertCell(5).innerText = entry.remainingBalance.toFixed(2);
-            });
-        }
+    function populateTable(data) {
+        let tableBody = document.getElementById('amortizationTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+
+        data.forEach(entry => {
+            let row = tableBody.insertRow();
+            row.insertCell(0).innerText = entry.month;
+            row.insertCell(1).innerText = entry.principalPaid.toFixed(2);
+            row.insertCell(2).innerText = entry.interestPaid.toFixed(2);
+            row.insertCell(3).innerText = entry.extraPrincipal.toFixed(2);
+            row.insertCell(4).innerText = entry.totalInterestPaid.toFixed(2);
+            row.insertCell(5).innerText = entry.remainingBalance.toFixed(2);
+        });
+    }
+
+
         function generateSavingsChart(data) {
             let labels = data.map(entry => entry.month);
             let principalData = data.map(entry => entry.principalPaid);
