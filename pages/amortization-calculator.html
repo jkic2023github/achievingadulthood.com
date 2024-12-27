@@ -86,24 +86,23 @@ permalink: "/amortization-calculator/"
             let recurringStartMonth = parseInt(document.getElementById('recurringStartMonth').value) || 0;
             
             let monthlyPayment = loanAmount * interestRate / (1 - Math.pow(1 + interestRate, -loanTerm));
+            let biWeeklyPayment = monthlyPayment / 2;
             document.getElementById('regularPayment').innerText = `Regular Monthly Payment (Principal & Interest): $${monthlyPayment.toFixed(2)}`;
             
             let amortizationData = [];
             let totalInterestPaid = 0;
             let principalPaid, interestPaid, extraPrincipal, remainingBalance = loanAmount;
-            let paymentInterval = biWeekly ? 2 : 1;
-            let totalPayments = loanTerm * paymentInterval;
             let biWeeklyCounter = startBiWeekly;
-            
-            for (let month = 1; month <= totalPayments; month++) {
-                interestPaid = remainingBalance * interestRate * paymentInterval;
-                principalPaid = (monthlyPayment / paymentInterval) - interestPaid;
-                extraPrincipal = (month === lumpSumMonth ? extraLumpSum : 0) + (month >= recurringStartMonth ? extraRecurring * paymentInterval : 0);
+            let totalPayments = loanTerm;
 
-                if (biWeekly && biWeeklyCounter < month && month % 2 === 0) {
-                    extraPrincipal += monthlyPayment / 2;
+            for (let month = 1; month <= totalPayments; month++) {
+                if (biWeekly && month >= startBiWeekly && (month - startBiWeekly) % 6 === 0) {
+                    remainingBalance -= biWeeklyPayment;
                 }
 
+                interestPaid = remainingBalance * interestRate;
+                principalPaid = monthlyPayment - interestPaid;
+                extraPrincipal = (month === lumpSumMonth ? extraLumpSum : 0) + (month >= recurringStartMonth ? extraRecurring : 0);
                 totalInterestPaid += interestPaid;
                 remainingBalance -= (principalPaid + extraPrincipal);
 
@@ -131,7 +130,6 @@ permalink: "/amortization-calculator/"
                 row.insertCell(5).innerText = entry.remainingBalance.toFixed(2);
             });
         }
-
         function generateSavingsChart(data) {
             let labels = data.map(entry => entry.month);
             let principalData = data.map(entry => entry.principalPaid);
