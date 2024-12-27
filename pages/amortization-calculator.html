@@ -57,6 +57,7 @@ permalink: "/amortization-calculator/"
                     <th>Month</th>
                     <th>Principal Paid</th>
                     <th>Interest Paid</th>
+                    <th>Extra Principal Payment</th>
                     <th>Total Interest Paid</th>
                     <th>Remaining Balance</th>
                 </tr>
@@ -66,6 +67,8 @@ permalink: "/amortization-calculator/"
         
         <h3>Savings Graph:</h3>
         <canvas id="savingsChart" width="400" height="200"></canvas>
+        
+        <h3 id="savingsSummary" style="text-align: center; color: #333;"></h3>
     </div>
 
     <script>
@@ -81,30 +84,22 @@ permalink: "/amortization-calculator/"
             let recurringStartMonth = parseInt(document.getElementById('recurringStartMonth').value) || 0;
             
             let monthlyPayment = loanAmount * interestRate / (1 - Math.pow(1 + interestRate, -loanTerm));
-            let biWeeklyPayment = monthlyPayment / 2;
+            let biWeeklyPayment = loanAmount * interestRate / (1 - Math.pow(1 + interestRate, -loanTerm * 2 / 3));
             
             let amortizationData = [];
             let totalInterestPaid = 0;
-            let principalPaid, interestPaid, remainingBalance = loanAmount;
+            let principalPaid, interestPaid, extraPrincipal, remainingBalance = loanAmount;
             let paymentInterval = biWeekly ? 2 : 1;
             let totalPayments = loanTerm * paymentInterval;
             
             for (let month = 1; month <= totalPayments; month++) {
                 interestPaid = remainingBalance * interestRate * paymentInterval;
                 principalPaid = (biWeekly ? biWeeklyPayment : monthlyPayment) - interestPaid;
+                extraPrincipal = (month === lumpSumMonth ? extraLumpSum : 0) + (month >= recurringStartMonth ? extraRecurring * paymentInterval : 0);
                 totalInterestPaid += interestPaid;
-                remainingBalance -= principalPaid;
+                remainingBalance -= (principalPaid + extraPrincipal);
 
-                if (month === lumpSumMonth) {
-                    remainingBalance -= extraLumpSum;
-                }
-
-                if (month >= recurringStartMonth) {
-                    remainingBalance -= extraRecurring * paymentInterval;
-                    principalPaid += extraRecurring * paymentInterval;
-                }
-
-                amortizationData.push({ month, principalPaid, interestPaid, totalInterestPaid, remainingBalance });
+                amortizationData.push({ month, principalPaid, interestPaid, extraPrincipal, totalInterestPaid, remainingBalance });
 
                 if (remainingBalance <= 0) break;
             }
@@ -117,17 +112,20 @@ permalink: "/amortization-calculator/"
                 row.insertCell(0).innerText = data.month;
                 row.insertCell(1).innerText = data.principalPaid.toFixed(2);
                 row.insertCell(2).innerText = data.interestPaid.toFixed(2);
-                row.insertCell(3).innerText = data.totalInterestPaid.toFixed(2);
-                row.insertCell(4).innerText = data.remainingBalance.toFixed(2);
+                row.insertCell(3).innerText = data.extraPrincipal.toFixed(2);
+                row.insertCell(4).innerText = data.totalInterestPaid.toFixed(2);
+                row.insertCell(5).innerText = data.remainingBalance.toFixed(2);
             });
 
             generateSavingsChart(amortizationData);
+            calculateSavingsSummary(amortizationData, loanTerm, totalInterestPaid);
         }
 
         function generateSavingsChart(amortizationData) {
             let labels = amortizationData.map(data => data.month);
             let principalData = amortizationData.map(data => data.principalPaid);
             let interestData = amortizationData.map(data => data.interestPaid);
+            let extraPrincipalData = amortizationData.map(data => data.extraPrincipal);
 
             let ctx = document.getElementById('savingsChart').getContext('2d');
             new Chart(ctx, {
@@ -136,7 +134,8 @@ permalink: "/amortization-calculator/"
                     labels,
                     datasets: [
                         { label: 'Principal Paid', data: principalData, borderColor: 'green', fill: false },
-                        { label: 'Interest Paid', data: interestData, borderColor: 'red', fill: false }
+                        { label: 'Interest Paid', data: interestData, borderColor: 'red', fill: false },
+                        { label: 'Extra Principal', data: extraPrincipalData, borderColor: 'blue', fill: false }
                     ]
                 },
                 options: {
@@ -149,6 +148,12 @@ permalink: "/amortization-calculator/"
                     }
                 }
             });
+        }
+
+        function calculateSavingsSummary(amortizationData, originalLoanTerm, totalInterestPaid) {
+            let shortenedTerm = amortizationData.length;
+            let interestSaved = (originalLoanTerm - shortenedTerm) * (totalInterestPaid / originalLoanTerm);
+            document.getElementById('savingsSummary').innerText = `By making extra payments, you have shortened your loan term by ${(originalLoanTerm - shortenedTerm) / 12} years and saved $${interestSaved.toFixed(2)} in interest!`;
         }
     </script>
 </body>
