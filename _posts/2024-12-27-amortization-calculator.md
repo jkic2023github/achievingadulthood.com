@@ -84,28 +84,23 @@ Managing your mortgage effectively is crucial for financial stability. Use this 
         let totalInterestPaid = 0;
         let principalPaid, interestPaid, extraPrincipal, remainingBalance = loanAmount;
         let biWeeklyCounter = 0;
-        let totalPayments = biWeekly ? loanTerm * 2 : loanTerm;
+        let totalPayments = loanTerm;
 
         for (let month = 1; month <= totalPayments; month++) {
             interestPaid = remainingBalance * interestRate;
-            if (biWeekly && month >= startBiWeekly && biWeeklyCounter % 6 === 0 && biWeeklyCounter !== 0) {
-                // Extra principal payment every 6 months
-                extraPrincipal = biWeeklyPayment * 2;
-                biWeeklyCounter = 0;  // Reset the counter
-            } else {
-                extraPrincipal = 0;
+            principalPaid = monthlyPayment - interestPaid;
+            extraPrincipal = 0;
+
+            if (biWeekly && month >= startBiWeekly && (month - startBiWeekly) % 6 === 0) {
+                extraPrincipal = biWeeklyPayment;
             }
-            principalPaid = (biWeekly && month >= startBiWeekly) ? biWeeklyPayment - interestPaid / 2 : monthlyPayment - interestPaid;
+
             extraPrincipal += (month === lumpSumMonth ? extraLumpSum : 0) + (month >= recurringStartMonth ? extraRecurring : 0);
 
             totalInterestPaid += interestPaid;
             remainingBalance -= (principalPaid + extraPrincipal);
 
             amortizationData.push({ month, principalPaid, interestPaid, extraPrincipal, totalInterestPaid, remainingBalance });
-
-            if (biWeekly && month >= startBiWeekly) {
-                biWeeklyCounter++;
-            }
 
             if (remainingBalance <= 0) break;
         }
