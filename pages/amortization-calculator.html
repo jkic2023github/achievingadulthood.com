@@ -131,6 +131,36 @@ permalink: "/amortization-calculator/"
                 row.insertCell(5).innerText = entry.remainingBalance.toFixed(2);
             });
         }
+
+        function generateSavingsChart(data) {
+            let labels = data.map(entry => entry.month);
+            let principalData = data.map(entry => entry.principalPaid);
+            let interestData = data.map(entry => entry.interestPaid);
+            let extraPrincipalData = data.map(entry => entry.extraPrincipal);
+
+            let ctx = document.getElementById('savingsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Principal Paid', data: principalData, borderColor: 'green', fill: false },
+                        { label: 'Interest Paid', data: interestData, borderColor: 'red', fill: false },
+                        { label: 'Extra Principal', data: extraPrincipalData, borderColor: 'blue', fill: false }
+                    ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
         function calculateSavingsSummary(data, originalLoanTerm, totalInterestPaid) {
             let shortenedTerm = data.length;
             let interestSaved = totalInterestPaid - data[data.length - 1].totalInterestPaid;
