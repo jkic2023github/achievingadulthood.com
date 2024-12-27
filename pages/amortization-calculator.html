@@ -87,7 +87,6 @@ permalink: "/amortization-calculator/"
             
             let monthlyPayment = loanAmount * interestRate / (1 - Math.pow(1 + interestRate, -loanTerm));
             let biWeeklyPayment = monthlyPayment / 2;
-            document.getElementById('regularPayment').innerText = `Regular Monthly Payment (Principal & Interest): $${monthlyPayment.toFixed(2)}`;
             
             let amortizationData = [];
             let totalInterestPaid = 0;
@@ -152,8 +151,8 @@ permalink: "/amortization-calculator/"
                         yAxes: [{
                             ticks: {
                                 beginAtZero: true
-                            }]
-                        }
+                            }
+                        }]
                     }
                 }
             });
